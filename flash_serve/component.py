@@ -10,24 +10,26 @@ from flash_serve.utilities import generate_script
 
 
 class FlashServe(TracerPythonScript):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, run_once=True, *args, **kwargs):
+        super().__init__(
+            __file__,
+            *args,
+            run_once=run_once,
+            **kwargs
+        )
         self.script_options = {
             "task": None,
             "checkpoint_path": None
         }
         self.script_dir = tempfile.mkdtemp()
         self.script_path = os.path.join(self.script_dir, "flash_serve.py")
-        self.session = None
-        self.task_meta: Optional[tasks.TaskMeta] = None
+        self._task_meta: Optional[tasks.TaskMeta] = None
         self.ready = False
-        self.supported_tasks = ["image_classification", "text_classification"]
 
     def run(self, task: str, checkpoint_path: str):
-        if task not in self.supported_tasks:
-            raise ValueError(f"Supported tasks are {self.supported_tasks} but got {task}")
-
-        self.task_meta = getattr(tasks, task)
+        self._task_meta = getattr(tasks, task, None)
+        if self._task_meta is None:
+            raise ValueError(f"Only `image_classification` and `text_classification` are supported but got {task}")
         self.script_options["task"] = task
         self.script_options["checkpoint_path"] = checkpoint_path
 
@@ -40,6 +42,8 @@ class FlashServe(TracerPythonScript):
             task_import_path=self._task_meta.task_import_path,
             task_class=self._task_meta.task_class,
             checkpoint=self.script_options["checkpoint_path"],
+            host=self.host,
+            port=self.port,
         )
         super().run()
 

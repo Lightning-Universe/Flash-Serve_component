@@ -31,48 +31,40 @@ To run the code below, copy the code and save it in a file `app.py`. Run the com
 import lightning as L
 from lightning import LightningApp
 
-from flash_fiftyone import FlashFiftyOne
+from flash_serve import FlashServe
 
 
-class FiftyOneComponent(L.LightningFlow):
+class FlashServeComponent(L.LightningFlow):
     def __init__(self):
         super().__init__()
-        # We only run FlashFiftyOne once, since we only have one input
+        # We only run FlashServe once, since we only have one input
         # default for `run_once` is `True` as well
-        self.flash_fiftyone = FlashFiftyOne(run_once=True)
+        self.flash_serve = FlashServe(run_once=True)
         self.layout = []
 
     def run(self):
         run_dict = {
             "task": "image_classification",
-            "url": "https://pl-flash-data.s3.amazonaws.com/hymenoptera_data.zip",
-            "data_config": {
-                "target": "from_folders",
-                "train_folder": "hymenoptera_data/train/",
-                "val_folder": "hymenoptera_data/val/",
-            },
             "checkpoint_path": "https://flash-weights.s3.amazonaws.com/0.7.0/image_classification_model.pt"
         }
 
-        self.flash_fiftyone.run(
+        self.flash_serve.run(
             run_dict["task"],
-            run_dict["url"],
-            run_dict["data_config"],
             run_dict["checkpoint_path"],
         )
 
     def configure_layout(self):
         # TODO: This needs to be updated to include the integrated spinner
-        if self.flash_fiftyone.ready and not self.layout:
+        if self.flash_serve.ready and not self.layout:
             self.layout.append(
                 {
                     "name": "Predictions Explorer (FiftyOne)",
-                    "content": self.flash_fiftyone,
+                    "content": self.flash_serve,
                 },
             )
         return self.layout
 
 
 # To launch the fiftyone component
-app = LightningApp(FiftyOneComponent(), debug=True)
+app = LightningApp(FlashServeComponent(), debug=True)
 ```

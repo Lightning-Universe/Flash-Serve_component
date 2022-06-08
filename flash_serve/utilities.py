@@ -5,12 +5,12 @@ import os.path
 
 from jinja2 import Environment, FileSystemLoader
 
-import flash_fiftyone
+import flash_serve
 
 
 @functools.lru_cache
 def _get_env():
-    return Environment(loader=FileSystemLoader(flash_fiftyone.TEMPLATES_ROOT))
+    return Environment(loader=FileSystemLoader(flash_serve.TEMPLATES_ROOT))
 
 
 def generate_script(
