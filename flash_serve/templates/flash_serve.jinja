@@ -1,0 +1,4 @@
+from {{ task_import_path }} import {{ task_class }}
+
+model = {{ task_class }}.load_from_checkpoint("{{ checkpoint_path }}")
+model.serve(host="{{ host }}", port={{ port }})
