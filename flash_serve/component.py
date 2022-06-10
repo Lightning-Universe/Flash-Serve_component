@@ -33,23 +33,25 @@ class FlashServe(TracerPythonScript):
         self.script_options["task"] = task
         self.script_options["checkpoint_path"] = checkpoint_path
 
+        self.on_after_run({})
+
+    def on_after_run(self, res):
         generate_script(
             self.script_path,
             "flash_serve.jinja",
-            task=task,
+            task=self.script_options["task"],
             data_module_import_path=self._task_meta.data_module_import_path,
             data_module_class=self._task_meta.data_module_class,
             task_import_path=self._task_meta.task_import_path,
             task_class=self._task_meta.task_class,
-            checkpoint=self.script_options["checkpoint_path"],
+            checkpoint_path=self.script_options["checkpoint_path"],
             host=self.host,
             port=self.port,
         )
-        super().run()
-
-    def on_after_run(self, res):
+        res = self._run_tracer(init_globals={})
         self.ready = res['ready']
 
     def on_exit(self):
         shutil.rmtree(self.script_dir)
+        super().on_exit()
         self.ready = False
