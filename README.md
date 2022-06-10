@@ -41,7 +41,7 @@ class Visualizer(L.LightningFlow):
         self.addr_host = None
         self.addr_port = None
 
-    def run(self, host_addr, port_addr, work_obj):
+    def run(self, host_addr, port_addr):
         self.addr_host = host_addr
         self.addr_port = port_addr
 
@@ -91,7 +91,7 @@ class Main(L.LightningFlow):
             run_dict["checkpoint_path"],
         )
         if self.work_obj.ready:
-            self.visualizer.run(self.work_obj.host, self.work_obj.port, self.work_obj)
+            self.visualizer.run(self.work_obj.host, self.work_obj.port)
 
     def configure_layout(self):
         return {

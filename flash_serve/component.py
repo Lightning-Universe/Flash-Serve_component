@@ -53,5 +53,5 @@ class FlashServe(TracerPythonScript):
 
     def on_exit(self):
         shutil.rmtree(self.script_dir)
-        self.ready = False
         super().on_exit()
+        self.ready = False
