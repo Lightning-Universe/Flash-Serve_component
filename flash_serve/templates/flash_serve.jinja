@@ -2,15 +2,15 @@ from {{ task_import_path }} import {{ task_class }}
 
 import threading
 
+
 class ModelThread(threading.Thread):
-    def __init__(self, task_cls, ckpt_path, host, port):
+    def __init__(self, model, host, port):
         super().__init__(daemon=True)
         self._exit_event = threading.Event()
         self._sleep_time = 0.5
-        self.ckpt_path = ckpt_path
-        self.task_cls = task_cls
         self.host = host
         self.port = port
+        self.model = model
 
     def run(self):
         try:
@@ -21,14 +21,15 @@ class ModelThread(threading.Thread):
             raise e
 
     def run_once(self):
-        model = self.task_cls.load_from_checkpoint(self.ckpt_path)
-        model.serve(host=str(self.host), port=self.port, sanity_check=False)
+        self.model.serve(host=str(self.host), port=self.port, sanity_check=False)
 
     def join(self, timeout = None):
         self._exit_event.set()
         super().join(timeout)
 
+
 ready = False
-model = ModelThread({{ task_class }}, "{{ checkpoint_path }}", "{{ host }}", {{ port }})
+model = {{ task_class }}.load_from_checkpoint("{{ checkpoint_path }}")
+model = ModelThread(model, "{{ host }}", {{ port }})
 model.start()
 ready = True
