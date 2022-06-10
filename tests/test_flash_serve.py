@@ -30,7 +30,7 @@ def test_flash_serve_launched():
     done = False
     while(True):
         end = time.time()
-        if (end - start >= 20.0):
+        if (end - start >= 100.0):
             break
         try:
             resp = requests.post(url, json=body)
