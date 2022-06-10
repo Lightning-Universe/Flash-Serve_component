@@ -1,0 +1,13 @@
+from {{ task_import_path }} import {{ task_class }}
+
+import threading
+
+def function_that_launches(host, port):
+    model = {{ task_class }}.load_from_checkpoint("{{ checkpoint_path }}")
+    model.serve(host=str(host), port=port, sanity_check=False)
+
+ready = False
+th = threading.Thread(target=function_that_launches, args=("{{ host }}", {{ port }}))
+th.start()
+if th.is_alive():
+    ready = True
