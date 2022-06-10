@@ -23,11 +23,12 @@ REQUIREMENTS = [req.strip() for req in open("requirements.txt").readlines()]
 
 setup(
     name="flash_serve",
-    version="0.0.0",
+    version="0.0.1",
     description="FlashServe for the given config",
     author="Kushashwa Ravi Shrimali, Ethan Harris",
     author_email="kush@grid.ai",
     url="https://github.com/PyTorchLightning/LAI-flash-serve",
     packages=find_packages(exclude=["tests", "tests.*"]),
     install_requires=setup_tools._load_requirements(_PATH_ROOT),
+    include_package_data=True,
 )

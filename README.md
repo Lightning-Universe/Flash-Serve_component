@@ -1,7 +1,7 @@
 <div align="center">
 <img src="https://pl-bolts-doc-images.s3.us-east-2.amazonaws.com/lai.png" width="200px">
 
-A Lightning component to serve a Flash Task using FiftyOne
+A Lightning component to serve an Image Classification / Text Classification Task using Lightning Flash
 
 ______________________________________________________________________
 
@@ -12,8 +12,8 @@ ______________________________________________________________________
 Use these instructions to install:
 
 ```bash
-git clone https://github.com/PyTorchLightning/LAI-flash-fiftyone.git
-cd LAI-flash-fiftyone
+git clone https://github.com/PyTorchLightning/LAI-flash-serve.git
+cd LAI-flash-serve
 pip install -r requirements.txt
 pip install -e .
 ```
@@ -31,7 +31,9 @@ To run the code below, copy the code and save it in a file `app.py`. Run the com
 import lightning as L
 from lightning.frontend import StreamlitFrontend
 from lightning.components.python import TracerPythonScript
+
 from flash_serve import FlashServe
+
 
 class Visualizer(L.LightningFlow):
     def __init__(self):
@@ -79,7 +81,6 @@ class Main(L.LightningFlow):
         self.work_obj = FlashServe()
 
     def run(self):
-        # self.work_obj.run()
         run_dict = {
             "task": "text_classification",
             "checkpoint_path": "https://flash-weights.s3.amazonaws.com/0.7.0/text_classification_model.pt"
