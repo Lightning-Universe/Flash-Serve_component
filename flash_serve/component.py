@@ -25,7 +25,6 @@ class FlashServe(TracerPythonScript):
         self.script_path = os.path.join(self.script_dir, "flash_serve.py")
         self._task_meta: Optional[tasks.TaskMeta] = None
         self.ready = False
-        self.checkpoint_downloaded = False
 
     def run(self, task: str, checkpoint_path: str):
         self._task_meta = getattr(tasks, task, None)
@@ -50,11 +49,9 @@ class FlashServe(TracerPythonScript):
             port=self.port,
         )
         res = self._run_tracer(init_globals={})
-        self.ready = res["ready"]
-        self.checkpoint_downloaded = res["checkpoint_downloaded"]
+        self.ready = res['ready']
 
     def on_exit(self):
         shutil.rmtree(self.script_dir)
         self.ready = False
-        self.checkpoint_downloaded = False
         super().on_exit()
