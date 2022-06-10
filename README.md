@@ -69,6 +69,8 @@ def render_fn(state):
     except requests.exceptions.RequestException as e:
         st.write("Exception: " + e)
         return
+    except Exception as e:
+        st.write("Waiting for the checkpoint to be downloaded...")
 
     out = resp.json()
     st.write("Output is: " + str(out))
@@ -83,15 +85,14 @@ class Main(L.LightningFlow):
     def run(self):
         run_dict = {
             "task": "text_classification",
-            "checkpoint_path": "https://flash-weights.s3.amazonaws.com/0.7.0/text_classification_model.pt"
+            "checkpoint_path": "https://flash-weights.s3.amazonaws.com/0.7.5/text_classification_model.pt"
         }
 
         self.work_obj.run(
             run_dict["task"],
             run_dict["checkpoint_path"],
         )
-        if self.work_obj.ready:
-            self.visualizer.run(self.work_obj.host, self.work_obj.port)
+        self.visualizer.run(self.work_obj.host, self.work_obj.port)
 
     def configure_layout(self):
         return {
