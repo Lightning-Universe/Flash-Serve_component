@@ -2,6 +2,9 @@ from {{ task_import_path }} import {{ task_class }}
 
 import threading
 
+checkpoint_downloaded = False
+
+
 class ModelThread(threading.Thread):
     def __init__(self, task_cls, ckpt_path, host, port):
         super().__init__(daemon=True)
@@ -21,12 +24,15 @@ class ModelThread(threading.Thread):
             raise e
 
     def run_once(self):
+        global checkpoint_downloaded
         model = self.task_cls.load_from_checkpoint(self.ckpt_path)
+        checkpoint_downloaded = True
         model.serve(host=str(self.host), port=self.port, sanity_check=False)
 
     def join(self, timeout = None):
         self._exit_event.set()
         super().join(timeout)
+
 
 ready = False
 model = ModelThread({{ task_class }}, "{{ checkpoint_path }}", "{{ host }}", {{ port }})
