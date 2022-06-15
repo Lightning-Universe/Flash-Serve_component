@@ -3,7 +3,7 @@ import os
 import tempfile
 import shutil
 
-from lightning.components.python import TracerPythonScript
+from lightning.app.components.python import TracerPythonScript
 
 from flash_serve import tasks
 from flash_serve.utilities import generate_script
