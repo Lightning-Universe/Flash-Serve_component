@@ -12,7 +12,7 @@ ______________________________________________________________________
 Use these instructions to install:
 
 ```bash
-git clone https://github.com/PyTorchLightning/LAI-flash-serve.git
+git clone https://github.com/Lightning-AI/LAI-flash-serve.git
 cd LAI-flash-serve
 pip install -r requirements.txt
 pip install -e .
@@ -29,8 +29,8 @@ To run the code below, copy the code and save it in a file `app.py`. Run the com
 
 ```python
 import lightning as L
-from lightning.frontend import StreamlitFrontend
-from lightning.components.python import TracerPythonScript
+from lightning.app.frontend import StreamlitFrontend
+from lightning.app.components.python import TracerPythonScript
 
 from flash_serve import FlashServe
 
