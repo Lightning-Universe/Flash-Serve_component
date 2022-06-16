@@ -27,7 +27,7 @@ setup(
     description="FlashServe for the given config",
     author="Kushashwa Ravi Shrimali, Ethan Harris",
     author_email="kush@lightning.ai",
-    url="https://github.com/Lightning-AI/LAI-flash-serve",
+    url="https://github.com/Lightning-AI/LAI-flash-serve-Component",
     packages=find_packages(exclude=["tests", "tests.*"]),
     install_requires=setup_tools._load_requirements(_PATH_ROOT),
     include_package_data=True,

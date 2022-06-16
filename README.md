@@ -12,8 +12,8 @@ ______________________________________________________________________
 Use these instructions to install:
 
 ```bash
-git clone https://github.com/Lightning-AI/LAI-flash-serve.git
-cd LAI-flash-serve
+git clone https://github.com/Lightning-AI/LAI-flash-serve-Component.git
+cd LAI-flash-serve-Component
 pip install -r requirements.txt
 pip install -e .
 ```
