@@ -10,11 +10,11 @@ from flash_serve.utilities import generate_script
 
 
 class FlashServe(TracerPythonScript):
-    def __init__(self, run_once=True, *args, **kwargs):
+    def __init__(self, cache_calls=True, *args, **kwargs):
         super().__init__(
             __file__,
             *args,
-            run_once=run_once,
+            cache_calls=cache_calls,
             **kwargs
         )
         self.script_options = {
