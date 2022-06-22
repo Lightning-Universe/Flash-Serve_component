@@ -22,10 +22,10 @@ pip install -e .
 
 **Note:**
 
-1. We have a `run_once` argument to the component, this allows you to only run it once if needed. Default is `True`, which means it will only run once if not set `False` explicitly.
+1. We have a `cache_calls` argument to the component, this allows you to only run it once till the point when save arguments are passed to the `run` methodtill the point when save arguments are passed to the `run` method.
 1. This component currently only supports `task` as `image_classification` or `text_classification`.
 
-To run the code below, copy the code and save it in a file `app.py`. Run the component using `lightning run app app.py`.
+To run the code below, copy the code and save it in a file `app.py`. Run the component using `lightning run app app.py` locally, and use: `lightning run app app.py --cloud` if you want to run it on the cloud.
 
 ```python
 import lightning as L
@@ -35,6 +35,7 @@ from lightning.app.components.python import TracerPythonScript
 from flash_serve import FlashServe
 
 
+# A sample class which sends a sample request to the served URL from FlashServe component
 class Visualizer(L.LightningFlow):
     def __init__(self):
         super().__init__()
@@ -52,13 +53,13 @@ class Visualizer(L.LightningFlow):
 def render_fn(state):
     import streamlit as st
     import requests
-    import time
 
     st.title("Fetching data...")
     if state.addr_host is None or state.addr_port is None:
         st.write("Server not initialized yet...")
         return
 
+    # Send a sample text to the served URL, and get the prediction
     text = "best movie ever"
     body = {"session": "UUID", "payload": {"inputs": {"data": text}}}
     try:
@@ -74,24 +75,28 @@ def render_fn(state):
     st.write("Output is: " + str(out))
 
 
-class Main(L.LightningFlow):
+class FlashServeComponent(L.LightningFlow):
     def __init__(self):
         super().__init__()
         self.visualizer = Visualizer()
-        self.work_obj = FlashServe()
+        self.serve = FlashServe()
 
     def run(self):
+        # FlashServe component currently supports "image_classification" and "text_classification" tasks (from Lightning Flash)
+        # Pass the corresponding checkpoint path (local/cloud) of your trained model
         run_dict = {
             "task": "text_classification",
             "checkpoint_path": "https://flash-weights.s3.amazonaws.com/0.7.0/text_classification_model.pt"
         }
 
-        self.work_obj.run(
-            run_dict["task"],
-            run_dict["checkpoint_path"],
+        self.serve.run(
+            task=run_dict["task"],
+            checkpoint_path=run_dict["checkpoint_path"],
         )
-        if self.work_obj.ready:
-            self.visualizer.run(self.work_obj.host, self.work_obj.port)
+
+        # Use the `ready` flag in FlashServe class which is `True` when the model is served and the URL is ready
+        if self.serve.ready:
+            self.visualizer.run(self.serve.host, self.serve.port)
 
     def configure_layout(self):
         return {
@@ -100,5 +105,5 @@ class Main(L.LightningFlow):
         }
 
 
-app = L.LightningApp(Main())
+app = L.LightningApp(FlashServeComponent())
 ```
