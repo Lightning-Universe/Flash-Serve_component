@@ -39,7 +39,7 @@ jobs:
 
     - name: Tests
       run: |
-        coverage run --source flash_serve -m py.test flash_serve tests -v --junitxml=junit/test-results-${{ runner.os }}-${{ matrix.python-version }}.xml
+        coverage run --source flash_serve -m pytest flash_serve tests -v
 
     - name: Statistics
       if: success()
