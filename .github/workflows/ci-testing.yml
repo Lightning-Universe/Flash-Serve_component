@@ -28,11 +28,6 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
-    - name: Install Lightning
-      run: |
-        pip install lightning
-      shell: bash
-
     - name: Install dependencies
       run: |
         python --version
